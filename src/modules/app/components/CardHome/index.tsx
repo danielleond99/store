@@ -1,18 +1,11 @@
-import { Button } from '../Button';
-import { FC, ReactElement } from 'react';
-import { Card } from '../Card';
-import { useNavigate } from 'react-router-dom';
+import { Button } from "../Button";
+import { FC, ReactElement } from "react";
+import { Card } from "../Card";
+import { useNavigate } from "react-router-dom";
 
 interface CardHomeProps {
   color: string;
-  label:
-    | 'campañas'
-    | 'promociones'
-    | 'reglas'
-    | 'restricciones'
-    | 'estadísticas'
-    | 'usuarios'
-    | 'tiendas';
+  label: "products" | "sales";
   type?: string;
   total?: number;
   icon: string;
@@ -35,51 +28,38 @@ export const CardHome: FC<CardHomeProps> = ({
     >
       <i
         className={`pi ${icon}`}
-        style={{ fontSize: '6em', color: 'white' }}
+        style={{ fontSize: "6em", color: "white" }}
       ></i>
-      <div className={'text-2xl text-white'}>
-        <span className={'block text-right text-4xl'}>{total}</span>
-        <span className={`capitalize text-center ${total !== null && 'mt-3'}`}>
+      <div className={"text-2xl text-white"}>
+        <span className={"block text-right text-4xl"}>{total}</span>
+        <span className={`capitalize text-center`}>
           {label}
         </span>
       </div>
     </div>
   );
-  const footer =
-    type !== 'estadísticas' ? (
-      <div className={'-mt-3'}>
-        <Button
-          onClick={() => navigate(`/dashboard/${type}/create`)}
-          label="ALTA"
-          icon={'pi pi-plus'}
-          style={`font-medium mr-3 bg-${color}-500 shadow-2 border-3 border-white`}
-        />
-        <Button
-          onClick={() => navigate(`/dashboard/${type}`)}
-          label="CONSULTA"
-          icon={'pi pi-eye'}
-          style={`font-medium bg-${color}-500 shadow-2 border-3 border-white`}
-        />
-      </div>
-    ) : (
-      <a
-        className={`p-button font-medium bg-${color}-500 shadow-2 border-3 border-white -mt-3`}
-        style={{ textDecorationLine: 'none' }}
-        href={
-          'https://stage.cupones.alsea.com.mx/WebCupones/alsea/tags/cuponeraAlsea?tm=alsea'
-        }
-        target={'_blank'}
-        rel="noreferrer"
-      >
-        ABRIR
-      </a>
-    );
+  const footer = (
+    <div className={"-mt-3"}>
+      <Button
+        onClick={() => navigate(`/dashboard/${type}/create`)}
+        label=" CREATE"
+        icon={"pi pi-plus"}
+        style={`font-medium mr-3 bg-${color}-500 shadow-2 border-3 border-white`}
+      />
+      <Button
+        onClick={() => navigate(`/dashboard/${type}`)}
+        label=" VIEW"
+        icon={"pi pi-eye"}
+        style={`font-medium bg-${color}-500 shadow-2 border-3 border-white`}
+      />
+    </div>
+  );
   return (
     <Card
       header={header}
       footer={footer}
       style={
-        'transition-all transition-duration-400 transition-delay-100 border-round-xl mx-3 shadow-4 hover:shadow-7 rotate'
+        "transition-all transition-duration-400 transition-delay-100 border-round-xl mx-3 shadow-4 hover:shadow-7 rotate"
       }
     />
   );

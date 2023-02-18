@@ -3,21 +3,23 @@ import {
   Action,
   combineReducers,
   configureStore,
-  getDefaultMiddleware,
   ThunkAction,
   ThunkDispatch,
 } from "@reduxjs/toolkit";
+import thunkMiddleware from "redux-thunk";
+
 import authReducer from "../../auth/redux";
+import messageReducer from "../../shared/redux/message";
+
+const middleware = [thunkMiddleware];
 
 const rootReducer = combineReducers({
   auth: authReducer,
-});
-const customizedMiddleware = getDefaultMiddleware({
-  serializableCheck: false,
+  message: messageReducer,
 });
 const store = configureStore({
   reducer: rootReducer,
-  middleware: () => customizedMiddleware,
+  middleware,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

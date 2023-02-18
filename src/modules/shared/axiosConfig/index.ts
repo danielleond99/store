@@ -11,22 +11,22 @@ const customAxiosConfig = (url: string) => {
   return axiosConfig;
 };
 
-export const customAxiosAppWithoutAuth = axios.create(
-  customAxiosConfig(
-    process.env.REACT_APP_API_URL ||
-      'https://03hrh9c2u3.execute-api.eu-west-1.amazonaws.com/pre/'
-  )
-);
+// export const customAxiosAppWithoutAuth = axios.create(
+//   customAxiosConfig(
+//     process.env.REACT_APP_API_URL ||
+//       'https://03hrh9c2u3.execute-api.eu-west-1.amazonaws.com/pre/'
+//   )
+// );
 const customAxiosApp = axios.create(
   customAxiosConfig(
     process.env.REACT_APP_API_URL ||
-      'https://03hrh9c2u3.execute-api.eu-west-1.amazonaws.com/pre/'
+      'http://localhost:3000/api/'
   )
 );
 export const customAxiosAppAuth = axios.create(
   customAxiosConfig(
     process.env.REACT_APP_AUTH_URL ||
-      'https://1vasdtm3h3.execute-api.eu-west-1.amazonaws.com/pre/'
+      'http://localhost:3000/api/'
   )
 );
 
@@ -48,10 +48,10 @@ customAxiosApp.interceptors.response.use(
     // if (error.response?.status === 500) {
     //   window.location.replace('/server-error');
     // }
-    if (error.response?.status === 401 || error.response?.status === 403) {
-      localStorage.clear();
-      window.location.replace('/auth/login');
-    }
+    // if (error.response?.status === 401 || error.response?.status === 403) {
+    //   localStorage.clear();
+    //   window.location.replace('/auth/login');
+    // }
     return Promise.reject(error);
   }
 );

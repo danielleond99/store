@@ -5,7 +5,7 @@ import App from "./modules/app/App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import store from "./modules/app/store";
-// import { Toast } from "./modules/app/components/Toast";
+import { Toast } from "./modules/app/components/Toast";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -13,9 +13,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      {/* <Toast> */}
-      <App />
-      {/* </Toast> */}
+      <Toast>
+        <App />
+      </Toast>
     </Provider>
   </React.StrictMode>
 );

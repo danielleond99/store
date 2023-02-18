@@ -3,9 +3,11 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { useSelector } from "react-redux";
 import { authSelector } from "../../auth/redux";
+import { Navigate } from "react-router";
+import { PrivateRoute } from "./PrivateRoute";
 
 const AuthRouter = lazy(() => import("../../auth/router"));
-// const HomeRouter = lazy(() => import("../../home/router"));
+const HomeRouter = lazy(() => import("../../home/router"));
 
 export const AppRouter: FC = (): ReactElement => {
   const { user, logged } = useSelector(authSelector);
@@ -20,6 +22,17 @@ export const AppRouter: FC = (): ReactElement => {
             </Suspense>
           }
         />
+        <Route
+          path="/dashboard/*"
+          element={
+            <PrivateRoute isAllowed={!!user && logged}>
+              <Suspense fallback={<Loading show={true} />}>
+                <HomeRouter />
+              </Suspense>
+            </PrivateRoute>
+          }
+        />
+        <Route path="*" element={<Navigate replace to="/auth/login" />} />
       </Routes>
     </BrowserRouter>
   );

@@ -2,7 +2,9 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 import authServices from "../services";
-import { IAuthRequest, IAuthResponse } from "../types";
+import { IAuthRequest, IAuthResponse, IRegisterResponse } from "../types";
+import { showMessage } from "../../shared/redux/message";
+import { IRegisterRequest } from "../types/index";
 
 interface IAuthState {
   logged: boolean;
@@ -12,15 +14,52 @@ interface IAuthState {
 }
 
 export const loginUser = createAsyncThunk(
-  "users/login",
-  async (input: IAuthRequest, { rejectWithValue, fulfillWithValue }) => {
+  "auth/login",
+  async (
+    input: IAuthRequest,
+    { dispatch, rejectWithValue, fulfillWithValue }
+  ) => {
     try {
-      const response = await authServices.login(input);
+      const response = await authServices.createItem<
+        IAuthResponse,
+        IAuthRequest
+      >(input);
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data));
       localStorage.setItem("logged", "true");
       return fulfillWithValue(response.data);
     } catch (err: any) {
+      console.log({ err });
+
+      dispatch(
+        showMessage({ severity: "error", summary: err.response.data.message })
+      );
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const registerUser = createAsyncThunk(
+  "auth/register",
+  async (
+    input: IRegisterRequest,
+    { dispatch, rejectWithValue, fulfillWithValue }
+  ) => {
+    try {
+      const response = await authServices.post<
+        IRegisterResponse,
+        IRegisterRequest
+      >("auth/register", input);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data));
+      localStorage.setItem("logged", "true");
+      return fulfillWithValue(response.data);
+    } catch (err: any) {
+      console.log({ err });
+
+      dispatch(
+        showMessage({ severity: "error", summary: err.response.data.message })
+      );
       return rejectWithValue(err.response.data);
     }
   }
@@ -65,6 +104,30 @@ const authSlice = createSlice({
     );
     builder.addCase(
       loginUser.rejected,
+      (state: IAuthState, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.user = null;
+        state.logged = false;
+        state.error = action.payload.message;
+      }
+    );
+    builder.addCase(registerUser.pending, (state: IAuthState) => {
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    });
+    builder.addCase(
+      registerUser.fulfilled,
+      (state: IAuthState, payload: PayloadAction<any>) => {
+        state.loading = false;
+        state.user = payload.payload;
+        state.logged = true;
+      }
+    );
+    builder.addCase(
+      registerUser.rejected,
       (state: IAuthState, action: PayloadAction<any>) => {
         state.loading = false;
         state.user = null;
