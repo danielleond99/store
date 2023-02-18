@@ -8,28 +8,34 @@ import { Button } from "../../app/components/Button";
 import { Input } from "../../app/components/Input";
 import { Loading } from "../../app/components/Loading";
 import { useLocation, useNavigate } from "react-router-dom";
-import { IProducts } from "../types/index";
+import { IProduct } from "../types/index";
 import { InputNum } from "../../app/components/InputNumber";
+import { useAppDispatch } from "../../app/store/index";
+import { createProduct } from "../redux";
+import { useSelector } from "react-redux";
+import { productsSelector } from "../redux/index";
 
 const SignupSchema = Yup.object().shape({
   code_product: Yup.string().required("Required field"),
   id_store: Yup.string().required("Required field"),
   name_product: Yup.string().required("Required field"),
-  price_product: Yup.string().required("Required field"),
-  stock_product: Yup.string().required("Required field"),
+  price_product: Yup.number().min(1).required("Required field"),
+  stock_product: Yup.number().min(1).required("Required field"),
 });
 
 export const FormProduct: FC = (): ReactElement => {
+  const disptach = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+  const { loadingProducts } = useSelector(productsSelector);
 
-  const formik = useFormik<IProducts>({
+  const formik = useFormik<IProduct>({
     initialValues: {
       code_product: "",
       id_store: "",
       name_product: "",
-      price_product: 0,
-      stock_product: 0,
+      price_product: 1,
+      stock_product: 1,
     },
     onSubmit: (values) => {
       console.log(values);
@@ -39,8 +45,8 @@ export const FormProduct: FC = (): ReactElement => {
 
   return (
     <div className="pt-3">
-      <Loading show={false} />
-      <form onSubmit={formik.handleSubmit}>
+      <Loading show={loadingProducts} />
+      <form>
         <Card
           style={"mx-3 shadow-3"}
           title={
@@ -54,7 +60,7 @@ export const FormProduct: FC = (): ReactElement => {
               style="col-4"
               required
               value={formik.values.code_product}
-              name={"values"}
+              name={"code_product"}
               label={"Code"}
               icon={"pi pi-info-circle"}
               onChange={formik.handleChange}
@@ -72,7 +78,7 @@ export const FormProduct: FC = (): ReactElement => {
               style="col-4"
               required
               value={formik.values.name_product}
-              name={"values"}
+              name={"name_product"}
               label={"Name"}
               icon={"pi pi-info-circle"}
               onChange={formik.handleChange}
@@ -86,7 +92,10 @@ export const FormProduct: FC = (): ReactElement => {
               name={"price_product"}
               label={"Price"}
               icon={"pi pi-info-circle"}
-              onChange={formik.handleChange}
+              onChange={(e: any) => {
+                void formik.setFieldTouched("price_product", true);
+                void formik.setFieldValue("price_product", e.value);
+              }}
             />
             <Input
               type="number"
@@ -110,7 +119,8 @@ export const FormProduct: FC = (): ReactElement => {
           />
           <Button
             disabled={!formik.isValid || !formik.dirty}
-            type="submit"
+            onClick={() => disptach(createProduct(formik.values))}
+            type="button"
             label="Guardar"
             icon={"pi pi-save"}
           />

@@ -31,7 +31,7 @@ const messageSlice = createSlice({
         ...action.payload,
         summary: action.payload.summary
           ? action.payload.summary
-          : "Lo Sentimos. Ha ocurrido un error",
+          : "We're sorry. An error has occurred",
         show: true,
       };
     },

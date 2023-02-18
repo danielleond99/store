@@ -1,7 +1,6 @@
-export interface ISales {
+export interface ISale {
   id?: string;
   code_product: string;
   count_product: number;
-  price_product: number;
-  sale_type: string;
+  type_of_sale: string;
 }

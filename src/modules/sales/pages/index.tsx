@@ -30,12 +30,7 @@ export const Sales = () => {
       sortable: true,
     },
     {
-      field: "price_product",
-      header: "Price",
-      sortable: true,
-    },
-    {
-      field: "sale_type",
+      field: "type_of_sale",
       header: "Sale type",
       sortable: true,
     },

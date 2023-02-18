@@ -1,15 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { ISales } from "../types";
+import { ISale } from "../types";
 import salesService from "../services";
 import { showMessage } from "../../shared/redux/message";
 
-interface ISalesState {
+interface ISaleState {
   loadingSales: boolean;
-  sales: ISales[];
+  sales: ISale[];
 }
 
-const initialState: ISalesState = {
+const initialState: ISaleState = {
   loadingSales: false,
   sales: [],
 };
@@ -18,13 +18,36 @@ export const getSales = createAsyncThunk(
   "get/sales",
   async (input: any, { dispatch, rejectWithValue, fulfillWithValue }) => {
     try {
-      const response = await salesService.getItems<ISales[]>(input);
+      const response = await salesService.getItems<ISale[]>(input);
       return fulfillWithValue(response.data);
     } catch (error: any) {
       dispatch(
         showMessage({ severity: "error", summary: error.response.data.message })
       );
       return rejectWithValue([]);
+    }
+  }
+);
+
+export const createSale = createAsyncThunk(
+  "post/sales",
+  async (input: any, { dispatch, rejectWithValue, fulfillWithValue }) => {
+    try {
+      const response = await salesService.createItem<ISale, ISale>(
+        input
+      );
+      dispatch(
+        showMessage({
+          severity: "success",
+          summary: "Sale successfully registered",
+        })
+      );
+      return fulfillWithValue(response.data);
+    } catch (error: any) {
+      dispatch(
+        showMessage({ severity: "error", summary: error.response.data.message })
+      );
+      return rejectWithValue(undefined);
     }
   }
 );
@@ -45,9 +68,19 @@ const salesSlice = createSlice({
       state.loadingSales = false;
       state.sales = [];
     });
+    builder.addCase(createSale.pending, (state) => {
+      state.loadingSales = true;
+    });
+    builder.addCase(createSale.fulfilled, (state, payload) => {
+      state.loadingSales = false;
+      state.sales.push(payload.payload);
+    });
+    builder.addCase(createSale.rejected, (state) => {
+      state.loadingSales = false;
+    });
   },
 });
 
 export const salesReducer = salesSlice.reducer;
-export const salesSelector = (state: RootState): ISalesState => state.sales;
+export const salesSelector = (state: RootState): ISaleState => state.sales;
 export default salesReducer;
