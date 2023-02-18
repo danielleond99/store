@@ -1,13 +1,17 @@
 import { FC, ReactElement } from "react";
 import { Route, Routes } from "react-router-dom";
-import { ProductsPage } from "../pages/ProductsPage";
+import { Products } from "../pages";
+import { Navigate } from "react-router";
 
-export const Products: FC = (): ReactElement => {
+export const ProductsRouter: FC = (): ReactElement => {
   return (
     <Routes>
-      <Route path={""} element={<ProductsPage />} />
+      <Route path={""} element={<Products />} />
+      <Route path={"create"} element={<Products />} />
+      <Route path={":productId/edit"} element={<Products />} />
+      <Route path={"*"} element={<Navigate to={"/dashboard"} replace />} />
     </Routes>
   );
 };
 
-export default Products;
+export default ProductsRouter;

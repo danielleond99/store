@@ -30,7 +30,6 @@ export const GenericTable: FC<GenericTableProps> = ({
   const onCustomPage = (event: any): void => {
     setFirst(event.first);
     setRows(event.rows);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     setCurrentPage(+event.page! + 1);
   };
   const onPageInputKeyDown = (event: any, options: any): void => {
@@ -38,13 +37,13 @@ export const GenericTable: FC<GenericTableProps> = ({
       const page = parseInt(String(currentPage));
       if (page < 1 || page > options.totalPages) {
         setPageInputTooltip(
-          `El valoe debe estar entre 1 y ${options.totalPages}.`
+          `The value must be between 1 and ${options.totalPages}.`
         );
       } else {
         const first = currentPage !== 0 ? options.rows * (page - 1) : 0;
 
         setFirst(first);
-        setPageInputTooltip("Presione 'Enter' para ir a esta página.");
+        setPageInputTooltip("Press 'Enter' to go to this page.");
       }
     }
   };
@@ -69,7 +68,7 @@ export const GenericTable: FC<GenericTableProps> = ({
             className="mx-1"
             style={{ color: "var(--text-color)", userSelect: "none" }}
           >
-            Elementos por página:{" "}
+            Elements per page:{" "}
           </span>
           <Dropdown
             value={options.value}
@@ -98,7 +97,7 @@ export const GenericTable: FC<GenericTableProps> = ({
             style={{ color: "var(--text-color)", userSelect: "none" }}
           >
             {" "}
-            Ir a{" "}
+            Go to{" "}
             <InputText
               type={"number"}
               className="ml-1 w-2 -mr-6 border-primary"
@@ -116,7 +115,7 @@ export const GenericTable: FC<GenericTableProps> = ({
   return (
     <DataTable
       {...dataTable}
-      emptyMessage={"No hay resultados que mostrar"}
+      emptyMessage={"There are no results to show"}
       className={"w-auto"}
       paginatorClassName="justify-content-end"
       paginatorTemplate={paginatorTemplate}
@@ -135,10 +134,6 @@ export const GenericTable: FC<GenericTableProps> = ({
       {colums.map((resp, i) => (
         <Column {...resp} key={i} />
       ))}
-      {/* <Column field="name" header="Name"></Column>
-                    <Column header="Image" ></Column>
-                    <Column field="price" header="Price" ></Column>
-                    <Column field="category" header="Category"></Column> */}
     </DataTable>
   );
 };

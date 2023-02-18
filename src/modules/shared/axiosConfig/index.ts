@@ -32,7 +32,7 @@ export const customAxiosAppAuth = axios.create(
 
 customAxiosApp.interceptors.request.use(
   (config) => {
-    config.headers!.Authorization = localStorage.getItem('token');
+    config.headers!.Authorization = `Bearer ${localStorage.getItem('token')}`;
     return config;
   },
   (error) => {

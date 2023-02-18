@@ -42,7 +42,7 @@ export const LoginPage: FC = (): ReactElement => {
 
   return (
     <div
-      className="bg-no-repeat bg-cover bg-center h-screen justify-content-center align-items-center overflow-y-scroll bg-primary-400"
+      className="bg-no-repeat bg-cover bg-center h-screen justify-content-center align-items-center overflow-y-scroll bg-primary-100"
       style={
         {
           // backgroundImage: `url(${require("../../../assets/back-cupones.png")})`,

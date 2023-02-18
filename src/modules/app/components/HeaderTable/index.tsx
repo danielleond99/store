@@ -6,15 +6,12 @@ interface HeaderTableProps {
   title?: string;
   type: any;
   disabled?: boolean;
-  navigateCreate?: any;
-  // actions?:
 }
 
 export const HeaderTable: FC<HeaderTableProps> = ({
-  title = "Datos",
+  title = "Data",
   type,
   disabled,
-  navigateCreate,
 }): ReactElement => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -29,9 +26,8 @@ export const HeaderTable: FC<HeaderTableProps> = ({
       <div>
         <Button
           disabled={disabled}
-          onClick={navigateCreate ?? create}
-          icon={"pi pi-plus"}
-          label={"Nueva"}
+          onClick={create}
+          label={"New"}
           style={"shadow-1 mt-1"}
         />
       </div>

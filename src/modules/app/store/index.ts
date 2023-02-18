@@ -10,12 +10,16 @@ import thunkMiddleware from "redux-thunk";
 
 import authReducer from "../../auth/redux";
 import messageReducer from "../../shared/redux/message";
+import productsReducer from "../../products/redux";
+import salesReducer from "../../sales/redux/index";
 
 const middleware = [thunkMiddleware];
 
 const rootReducer = combineReducers({
   auth: authReducer,
   message: messageReducer,
+  products: productsReducer,
+  sales: salesReducer,
 });
 const store = configureStore({
   reducer: rootReducer,

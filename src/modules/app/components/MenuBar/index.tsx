@@ -35,10 +35,10 @@ export const MenuBar: FC<MenuProps> = ({
 
   return (
     <Menubar
-      // style={{
-      //   background: `linear-gradient(to right, var(--primary-500), var(--primary-400), var(--primary-300), var(--primary-200))`,
-      // }}
-      className={`shadow-3 max-w-screen w-screen fixed top-0 z-5 bg-primary-900 border-transparent -mt-1 ${style}`}
+      style={{
+        background: `linear-gradient(to right, var(--primary-200), var(--primary-100), var(--primary-100), var(--primary-50))`,
+      }}
+      className={`shadow-3 max-w-screen w-screen fixed top-0 z-5 border-transparent -mt-1 ${style}`}
       model={model}
       end={
         end ?? (

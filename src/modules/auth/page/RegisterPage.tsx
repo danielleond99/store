@@ -51,7 +51,7 @@ export const RegisterPage: FC = (): ReactElement => {
 
   return (
     <div
-      className="bg-no-repeat bg-cover bg-center h-screen justify-content-center align-items-center overflow-y-scroll bg-primary-400"
+      className="bg-no-repeat bg-cover bg-center h-screen justify-content-center align-items-center overflow-y-scroll bg-primary-100"
       style={
         {
           // backgroundImage: `url(${require("../../../assets/back-cupones.png")})`,
@@ -99,6 +99,16 @@ export const RegisterPage: FC = (): ReactElement => {
                 formik.touched.password ? formik.errors.password : undefined
               }
             />
+            <div className="flex justify-content-end">
+              <span
+                className={"text-primary font-semibold cursor-pointer mb-3"}
+                onClick={() => {
+                  navigate("/auth/login");
+                }}
+              >
+                Already have an account? login
+              </span>
+            </div>
             <Button
               disabled={!formik.isValid || !formik.dirty}
               label={"Signup"}
