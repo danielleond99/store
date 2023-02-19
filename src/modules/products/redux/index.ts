@@ -28,6 +28,23 @@ export const getProducts = createAsyncThunk(
     }
   }
 );
+export const getProductById = createAsyncThunk(
+  "get/product",
+  async (
+    productId: string,
+    { dispatch, rejectWithValue, fulfillWithValue }
+  ) => {
+    try {
+      const response = await productService.getItemById<IProduct>(productId);
+      return fulfillWithValue(response.data);
+    } catch (error: any) {
+      dispatch(
+        showMessage({ severity: "error", summary: error.response.data.message })
+      );
+      return rejectWithValue(undefined);
+    }
+  }
+);
 export const createProduct = createAsyncThunk(
   "post/products",
   async (input: any, { dispatch, rejectWithValue, fulfillWithValue }) => {

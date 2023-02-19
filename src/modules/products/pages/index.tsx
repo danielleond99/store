@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ColumnProps } from "primereact/column";
 import { CrudLayout } from "../../shared/layouts";
 import { FormProduct } from "../components/FormProduct";
@@ -8,10 +8,13 @@ import { useSelector } from "react-redux";
 import { productsSelector } from "../redux";
 import { useAppDispatch } from "../../app/store";
 import { getProducts } from "../redux/index";
+import { IProduct } from "../types/index";
+import { ActionBodyTemplate } from "../../app/components/ActionBodyTemplate";
 
 export const Products = () => {
   const disptach = useAppDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const { products, loadingProducts } = useSelector(productsSelector);
 
@@ -44,6 +47,16 @@ export const Products = () => {
       field: "stock_product",
       header: "Stock",
       sortable: true,
+    },
+    {
+      field: "actions",
+      header: "Actions",
+      body: (data: IProduct) => (
+        <ActionBodyTemplate
+          onEdit={() => navigate(`/dashboard/products/${data.id}/edit`)}
+          onDelete={() => {}}
+        />
+      ),
     },
   ];
 

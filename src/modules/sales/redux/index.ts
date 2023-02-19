@@ -28,7 +28,23 @@ export const getSales = createAsyncThunk(
     }
   }
 );
-
+export const getSaleById = createAsyncThunk(
+  "get/sale",
+  async (
+    saleId: string,
+    { dispatch, rejectWithValue, fulfillWithValue }
+  ) => {
+    try {
+      const response = await salesService.getItemById<ISale>(saleId);
+      return fulfillWithValue(response.data);
+    } catch (error: any) {
+      dispatch(
+        showMessage({ severity: "error", summary: error.response.data.message })
+      );
+      return rejectWithValue(undefined);
+    }
+  }
+);
 export const createSale = createAsyncThunk(
   "post/sales",
   async (input: any, { dispatch, rejectWithValue, fulfillWithValue }) => {

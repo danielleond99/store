@@ -18,14 +18,6 @@ body {
   animation: rotation 1.8s infinite linear;
 }
 
-.p-menubar .p-menubar-button {
-  display: none !important;
-}
-
-.p-items-hidden .p-carousel-item {
-  visibility: visible !important;
-}
-
 @keyframes rotation {
   from {
     transform: rotate(0deg);

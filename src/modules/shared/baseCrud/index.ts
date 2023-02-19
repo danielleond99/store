@@ -26,9 +26,12 @@ export class BaseCrudService {
     return this._axiosInstance.get<T>(this.url, { params });
   }
 
-  getItemById<T, S>(input: S): Promise<AxiosResponse<T, any>> {
-    return this._axiosInstance.get<T>(this.url, {
-      params: input,
+  getItemById<T, S = any>(
+    itemId: string,
+    params?: S
+  ): Promise<AxiosResponse<T, any>> {
+    return this._axiosInstance.get<T>(`${this.url}/${itemId}`, {
+      params,
     });
   }
 

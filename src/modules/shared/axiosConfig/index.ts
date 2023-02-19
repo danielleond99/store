@@ -1,38 +1,25 @@
-import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
 const customAxiosConfig = (url: string) => {
   const axiosConfig: AxiosRequestConfig = {
     headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
+      "Content-Type": "application/json;charset=UTF-8",
     },
     baseURL: url,
   };
 
   return axiosConfig;
 };
-
-// export const customAxiosAppWithoutAuth = axios.create(
-//   customAxiosConfig(
-//     process.env.REACT_APP_API_URL ||
-//       'https://03hrh9c2u3.execute-api.eu-west-1.amazonaws.com/pre/'
-//   )
-// );
 const customAxiosApp = axios.create(
-  customAxiosConfig(
-    process.env.REACT_APP_API_URL ||
-      'http://localhost:3000/api/'
-  )
+  customAxiosConfig("http://localhost:3000/api/")
 );
 export const customAxiosAppAuth = axios.create(
-  customAxiosConfig(
-    process.env.REACT_APP_AUTH_URL ||
-      'http://localhost:3000/api/'
-  )
+  customAxiosConfig("http://localhost:3000/api/")
 );
 
 customAxiosApp.interceptors.request.use(
   (config) => {
-    config.headers!.Authorization = `Bearer ${localStorage.getItem('token')}`;
+    config.headers!.Authorization = `Bearer ${localStorage.getItem("token")}`;
     return config;
   },
   (error) => {
