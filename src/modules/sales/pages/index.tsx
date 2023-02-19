@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
 import { ColumnProps } from "primereact/column";
 import { CrudLayout } from "../../shared/layouts";
 import { TablesEnums } from "../../shared/enums";
@@ -8,7 +8,8 @@ import { getSales, salesSelector } from "../redux";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { ActionBodyTemplate } from "../../app/components/ActionBodyTemplate";
-import { ISale } from '../types/index';
+import { ISale } from "../types/index";
+import { deleteSale } from "../redux/index";
 
 export const Sales = () => {
   const disptach = useAppDispatch();
@@ -43,7 +44,7 @@ export const Sales = () => {
       body: (data: ISale) => (
         <ActionBodyTemplate
           onEdit={() => navigate(`/dashboard/sales/${data.id}/edit`)}
-          onDelete={() => {}}
+          onDelete={() => disptach(deleteSale(data.id!))}
         />
       ),
     },

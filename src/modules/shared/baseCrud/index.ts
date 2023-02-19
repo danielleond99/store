@@ -18,8 +18,8 @@ export class BaseCrudService {
     return this._axiosInstance.put<T>(`${url}`, input);
   }
 
-  delete<T>(url: string): Promise<AxiosResponse<T, any>> {
-    return this._axiosInstance.delete<T>(`${url}`);
+  delete<T>(itemId: string): Promise<AxiosResponse<T, any>> {
+    return this._axiosInstance.delete<T>(`${this.url}/${itemId}`);
   }
 
   getItems<T, D = any>(params?: D): Promise<AxiosResponse<T, any>> {

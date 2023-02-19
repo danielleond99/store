@@ -5,7 +5,7 @@ import { CrudLayout } from "../../shared/layouts";
 import { FormProduct } from "../components/FormProduct";
 import { TablesEnums } from "../../shared/enums";
 import { useSelector } from "react-redux";
-import { productsSelector } from "../redux";
+import { deleteProduct, productsSelector } from "../redux";
 import { useAppDispatch } from "../../app/store";
 import { getProducts } from "../redux/index";
 import { IProduct } from "../types/index";
@@ -54,7 +54,7 @@ export const Products = () => {
       body: (data: IProduct) => (
         <ActionBodyTemplate
           onEdit={() => navigate(`/dashboard/products/${data.id}/edit`)}
-          onDelete={() => {}}
+          onDelete={() => disptach(deleteProduct(data.id!))}
         />
       ),
     },

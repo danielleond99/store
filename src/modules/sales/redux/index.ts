@@ -30,10 +30,7 @@ export const getSales = createAsyncThunk(
 );
 export const getSaleById = createAsyncThunk(
   "get/sale",
-  async (
-    saleId: string,
-    { dispatch, rejectWithValue, fulfillWithValue }
-  ) => {
+  async (saleId: string, { dispatch, rejectWithValue, fulfillWithValue }) => {
     try {
       const response = await salesService.getItemById<ISale>(saleId);
       return fulfillWithValue(response.data);
@@ -49,15 +46,27 @@ export const createSale = createAsyncThunk(
   "post/sales",
   async (input: any, { dispatch, rejectWithValue, fulfillWithValue }) => {
     try {
-      const response = await salesService.createItem<ISale, ISale>(
-        input
-      );
+      const response = await salesService.createItem<ISale, ISale>(input);
       dispatch(
         showMessage({
           severity: "success",
           summary: "Sale successfully registered",
         })
       );
+      return fulfillWithValue(response.data);
+    } catch (error: any) {
+      dispatch(
+        showMessage({ severity: "error", summary: error.response.data.message })
+      );
+      return rejectWithValue(undefined);
+    }
+  }
+);
+export const deleteSale = createAsyncThunk(
+  "delete/sale",
+  async (saleId: string, { dispatch, rejectWithValue, fulfillWithValue }) => {
+    try {
+      const response = await salesService.delete<ISale>(saleId);
       return fulfillWithValue(response.data);
     } catch (error: any) {
       dispatch(
@@ -92,6 +101,16 @@ const salesSlice = createSlice({
       state.sales.push(payload.payload);
     });
     builder.addCase(createSale.rejected, (state) => {
+      state.loadingSales = false;
+    });
+    builder.addCase(deleteSale.pending, (state) => {
+      state.loadingSales = true;
+    });
+    builder.addCase(deleteSale.fulfilled, (state, action) => {
+      state.loadingSales = false;
+      state.sales = state.sales.filter((sale) => sale.id !== action.payload.id);
+    });
+    builder.addCase(deleteSale.rejected, (state) => {
       state.loadingSales = false;
     });
   },
