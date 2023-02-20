@@ -22,7 +22,10 @@ export const getProducts = createAsyncThunk(
       return fulfillWithValue(response.data);
     } catch (error: any) {
       dispatch(
-        showMessage({ severity: "error", summary: error.response.data.message })
+        showMessage({
+          severity: "error",
+          summary: error?.response?.data?.message,
+        })
       );
       return rejectWithValue([]);
     }
@@ -39,7 +42,10 @@ export const getProductById = createAsyncThunk(
       return fulfillWithValue(response.data);
     } catch (error: any) {
       dispatch(
-        showMessage({ severity: "error", summary: error.response.data.message })
+        showMessage({
+          severity: "error",
+          summary: error?.response?.data?.message,
+        })
       );
       return rejectWithValue(undefined);
     }
@@ -47,7 +53,7 @@ export const getProductById = createAsyncThunk(
 );
 export const createProduct = createAsyncThunk(
   "post/products",
-  async (input: any, { dispatch, rejectWithValue, fulfillWithValue }) => {
+  async (input: IProduct, { dispatch, rejectWithValue, fulfillWithValue }) => {
     try {
       const response = await productService.createItem<IProduct, IProduct>(
         input
@@ -61,26 +67,61 @@ export const createProduct = createAsyncThunk(
       return fulfillWithValue(response.data);
     } catch (error: any) {
       dispatch(
-        showMessage({ severity: "error", summary: error.response.data.message })
+        showMessage({
+          severity: "error",
+          summary: error?.response?.data?.message,
+        })
       );
       return rejectWithValue(undefined);
     }
   }
 );
-export const deleteProduct = createAsyncThunk(
-  "delete/product",
+export const editProduct = createAsyncThunk(
+  "put/products",
   async (
-    productId: string,
-    { dispatch, rejectWithValue, fulfillWithValue }
+    { productId, values }: { productId: string; values: IProduct },
+    { dispatch }
   ) => {
     try {
-      const response = await productService.delete<IProduct>(productId);
-      return fulfillWithValue(response.data);
+      delete values.id;
+      const response = await productService.updateItem<IProduct, IProduct>(
+        productId,
+        values
+      );
+      if (response.status === 200) {
+        dispatch(getProducts({}));
+        dispatch(
+          showMessage({
+            severity: "success",
+            summary: "Product successfully edited",
+          })
+        );
+      }
     } catch (error: any) {
       dispatch(
-        showMessage({ severity: "error", summary: error.response.data.message })
+        showMessage({
+          severity: "error",
+          summary: error?.response?.data?.message,
+        })
       );
-      return rejectWithValue(undefined);
+    }
+  }
+);
+export const deleteProduct = createAsyncThunk(
+  "delete/products",
+  async (productId: string, { dispatch }) => {
+    try {
+      const response = await productService.delete<IProduct>(productId);
+      if (response.status === 200) {
+        dispatch(getProducts({}));
+      }
+    } catch (error: any) {
+      dispatch(
+        showMessage({
+          severity: "error",
+          summary: error?.response?.data?.message,
+        })
+      );
     }
   }
 );
@@ -109,18 +150,6 @@ const productsSlice = createSlice({
       state.products.push(action.payload);
     });
     builder.addCase(createProduct.rejected, (state) => {
-      state.loadingProducts = false;
-    });
-    builder.addCase(deleteProduct.pending, (state) => {
-      state.loadingProducts = true;
-    });
-    builder.addCase(deleteProduct.fulfilled, (state, action) => {
-      state.loadingProducts = false;
-      state.products = state.products.filter(
-        (product) => product.id !== action.payload.id
-      );
-    });
-    builder.addCase(deleteProduct.rejected, (state) => {
       state.loadingProducts = false;
     });
   },

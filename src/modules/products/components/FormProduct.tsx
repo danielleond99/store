@@ -1,4 +1,4 @@
-import { FC, ReactElement, useEffect, useState } from "react";
+import { FC, ReactElement, useEffect } from "react";
 
 import * as Yup from "yup";
 
@@ -11,9 +11,13 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { IProduct } from "../types/index";
 import { InputNum } from "../../app/components/InputNumber";
 import { useAppDispatch } from "../../app/store/index";
-import { createProduct } from "../redux";
 import { useSelector } from "react-redux";
-import { productsSelector, getProductById } from "../redux/index";
+import {
+  productsSelector,
+  getProductById,
+  editProduct,
+  createProduct,
+} from "../redux";
 import { showMessage } from "../../shared/redux/message";
 
 const SignupSchema = Yup.object().shape({
@@ -30,20 +34,19 @@ export const FormProduct: FC = (): ReactElement => {
   const navigate = useNavigate();
   const { productId } = useParams();
   const { loadingProducts } = useSelector(productsSelector);
-  const [product, setProduct] = useState<IProduct | undefined>(undefined);
 
   useEffect(() => {
     if (productId)
       disptach(getProductById(productId))
         .unwrap()
         .then((product) => {
-          setProduct(product);
+          formik.setValues({ ...product });
         })
         .catch((error) => {
           disptach(
             showMessage({
               severity: "error",
-              summary: error.response.data.message,
+              summary: error?.response?.data?.message,
             })
           );
         });
@@ -51,11 +54,11 @@ export const FormProduct: FC = (): ReactElement => {
 
   const formik = useFormik<IProduct>({
     initialValues: {
-      code_product: product?.code_product || "",
-      id_store: product?.id_store || "",
-      name_product: product?.name_product || "",
-      price_product: product?.price_product || 1,
-      stock_product: product?.stock_product || 1,
+      code_product: "",
+      id_store: "",
+      name_product: "",
+      price_product: 1,
+      stock_product: 1,
     },
     onSubmit: (values) => {
       console.log(values);
@@ -139,7 +142,15 @@ export const FormProduct: FC = (): ReactElement => {
           />
           <Button
             // onClick={() => console.log(formik.values)}
-            onClick={() => disptach(createProduct(formik.values))}
+            onClick={() =>
+              productId
+                ? disptach(editProduct({ values: formik.values, productId }))
+                    .unwrap()
+                    .then(() => navigate(-1))
+                : disptach(createProduct(formik.values))
+                    .unwrap()
+                    .then(() => formik.resetForm())
+            }
             disabled={!formik.isValid || !formik.dirty}
             type="button"
             label="Guardar"

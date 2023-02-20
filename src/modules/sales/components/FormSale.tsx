@@ -1,4 +1,4 @@
-import { FC, ReactElement, useState, useEffect } from "react";
+import { FC, ReactElement, useEffect } from "react";
 
 import * as Yup from "yup";
 
@@ -8,7 +8,12 @@ import { Button } from "../../app/components/Button";
 import { Input } from "../../app/components/Input";
 import { Loading } from "../../app/components/Loading";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { salesSelector, createSale, getSaleById } from "../redux/index";
+import {
+  salesSelector,
+  createSale,
+  getSaleById,
+  editSale,
+} from "../redux/index";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "../../app/store";
 import { ISale } from "../types/index";
@@ -25,7 +30,6 @@ export const FormSale: FC = (): ReactElement => {
   const location = useLocation();
   const navigate = useNavigate();
   const { saleId } = useParams();
-  const [sale, setSale] = useState<ISale | undefined>(undefined);
 
   const { loadingSales } = useSelector(salesSelector);
 
@@ -34,13 +38,13 @@ export const FormSale: FC = (): ReactElement => {
       disptach(getSaleById(saleId))
         .unwrap()
         .then((sale) => {
-          setSale(sale);
+          formik.setValues({ ...sale });
         })
         .catch((error) => {
           disptach(
             showMessage({
               severity: "error",
-              summary: error.response.data.message,
+              summary: error?.response?.data?.message,
             })
           );
         });
@@ -48,9 +52,9 @@ export const FormSale: FC = (): ReactElement => {
 
   const formik = useFormik<ISale>({
     initialValues: {
-      code_product: sale?.code_product || "",
-      count_product: sale?.count_product || 1,
-      type_of_sale: sale?.type_of_sale || 1,
+      code_product: "",
+      count_product: 1,
+      type_of_sale: 1,
     },
     onSubmit: (values) => {
       console.log(values);
@@ -112,7 +116,15 @@ export const FormSale: FC = (): ReactElement => {
           />
           <Button
             // onClick={() => console.log(formik.values)}
-            onClick={() => disptach(createSale(formik.values))}
+            onClick={() =>
+              saleId
+                ? disptach(editSale({ values: formik.values, saleId }))
+                    .unwrap()
+                    .then(() => navigate(-1))
+                : disptach(createSale(formik.values))
+                    .unwrap()
+                    .then(() => formik.resetForm())
+            }
             disabled={!formik.isValid || !formik.dirty}
             type="button"
             label="Guardar"

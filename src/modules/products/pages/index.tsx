@@ -53,8 +53,10 @@ export const Products = () => {
       header: "Actions",
       body: (data: IProduct) => (
         <ActionBodyTemplate
-          onEdit={() => navigate(`/dashboard/products/${data.id}/edit`)}
-          onDelete={() => disptach(deleteProduct(data.id!))}
+          onEdit={() =>
+            navigate(`/dashboard/products/${data.code_product}/edit`)
+          }
+          onDelete={() => disptach(deleteProduct(data.code_product))}
         />
       ),
     },

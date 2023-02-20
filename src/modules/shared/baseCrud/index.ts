@@ -39,8 +39,8 @@ export class BaseCrudService {
     return this._axiosInstance.post<T>(this.url, input);
   }
 
-  updateItem<T, S>(input: S): Promise<AxiosResponse<T, any>> {
-    return this._axiosInstance.put<T>(this.url, input);
+  updateItem<T, S>(itemId: string, input: S): Promise<AxiosResponse<T, any>> {
+    return this._axiosInstance.patch<T>(`${this.url}/${itemId}`, input);
   }
 
   filter<T = any, S = any>(input: S): Promise<AxiosResponse<T, any>> {

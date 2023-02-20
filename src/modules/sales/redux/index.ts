@@ -22,7 +22,10 @@ export const getSales = createAsyncThunk(
       return fulfillWithValue(response.data);
     } catch (error: any) {
       dispatch(
-        showMessage({ severity: "error", summary: error.response.data.message })
+        showMessage({
+          severity: "error",
+          summary: error?.response?.data?.message,
+        })
       );
       return rejectWithValue([]);
     }
@@ -36,7 +39,10 @@ export const getSaleById = createAsyncThunk(
       return fulfillWithValue(response.data);
     } catch (error: any) {
       dispatch(
-        showMessage({ severity: "error", summary: error.response.data.message })
+        showMessage({
+          severity: "error",
+          summary: error?.response?.data?.message,
+        })
       );
       return rejectWithValue(undefined);
     }
@@ -56,23 +62,59 @@ export const createSale = createAsyncThunk(
       return fulfillWithValue(response.data);
     } catch (error: any) {
       dispatch(
-        showMessage({ severity: "error", summary: error.response.data.message })
+        showMessage({
+          severity: "error",
+          summary: error?.response?.data?.message,
+        })
       );
       return rejectWithValue(undefined);
     }
   }
 );
-export const deleteSale = createAsyncThunk(
-  "delete/sale",
-  async (saleId: string, { dispatch, rejectWithValue, fulfillWithValue }) => {
+export const editSale = createAsyncThunk(
+  "put/sales",
+  async (
+    { saleId, values }: { saleId: string; values: ISale },
+    { dispatch }
+  ) => {
     try {
-      const response = await salesService.delete<ISale>(saleId);
-      return fulfillWithValue(response.data);
+      delete values.id;
+      const response = await salesService.updateItem<ISale, ISale>(
+        saleId,
+        values
+      );
+      if (response.status === 200) {
+        dispatch(getSales({}));
+        dispatch(
+          showMessage({
+            severity: "success",
+            summary: "Sale successfully edited",
+          })
+        );
+      }
     } catch (error: any) {
       dispatch(
-        showMessage({ severity: "error", summary: error.response.data.message })
+        showMessage({
+          severity: "error",
+          summary: error?.response?.data?.message,
+        })
       );
-      return rejectWithValue(undefined);
+    }
+  }
+);
+export const deleteSale = createAsyncThunk(
+  "delete/sale",
+  async (saleId: string, { dispatch }) => {
+    try {
+      const response = await salesService.delete<ISale>(saleId);
+      if (response.status === 200) dispatch(getSales({}));
+    } catch (error: any) {
+      dispatch(
+        showMessage({
+          severity: "error",
+          summary: error?.response?.data?.message,
+        })
+      );
     }
   }
 );
@@ -101,16 +143,6 @@ const salesSlice = createSlice({
       state.sales.push(payload.payload);
     });
     builder.addCase(createSale.rejected, (state) => {
-      state.loadingSales = false;
-    });
-    builder.addCase(deleteSale.pending, (state) => {
-      state.loadingSales = true;
-    });
-    builder.addCase(deleteSale.fulfilled, (state, action) => {
-      state.loadingSales = false;
-      state.sales = state.sales.filter((sale) => sale.id !== action.payload.id);
-    });
-    builder.addCase(deleteSale.rejected, (state) => {
       state.loadingSales = false;
     });
   },
